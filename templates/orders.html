@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+</head>
+<body>
+    <div class="container mt-5">
+		<!-- Dropdown for sorting options -->
+        <div class="dropdown mb-4">
+            <button class="btn btn-secondary dropdown-toggle" type="button" 
+                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort by: {{ sort_key.capitalize() }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="/?sort=date">Date</a></li>
+                <li><a class="dropdown-item" href="/?sort=drug">Drug</a></li>
+                <li><a class="dropdown-item" href="/?sort=name">Name</a></li>
+            </ul>
+        </div>
+		<!-- Display cards with order information in each -->
+        <div class="row">
+            {% for order in orders %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ order.name }}</h5>
+                        <p class="card-text">
+                            <strong>Drug:</strong> {{ order.drug }} <br>
+							<strong>Quantity:</strong> {{ order.qty }} <br>
+                            <strong>Date added:</strong> {{ order.date }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+</head>
+<body>
+    <div class="container mt-5">
+		<!-- Dropdown for sorting options -->
+        <div class="dropdown mb-4">
+            <button class="btn btn-secondary dropdown-toggle" type="button" 
+                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort by: {{ sort_key.capitalize() }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="/?sort=date">Date</a></li>
+                <li><a class="dropdown-item" href="/?sort=drug">Drug</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
