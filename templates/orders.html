@@ -44,8 +44,8 @@
                                     <select type="text" class="form-control" id="drug" name="drug" required>
                                         <option value="" disabled selected>Select an option</option>
                                         <option value="H2O">H2O</option>
-                                        <option value="Dihydrogen monoxide">Dihydrogen monoxide</option>
-                                        <option value="Hydrogen hydroxide">Hydrogen hydroxide</option>
+                                        <option value="Dihydrogen Monoxide">Dihydrogen Monoxide</option>
+                                        <option value="Hydrogen Hydroxide">Hydrogen Hydroxide</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -76,9 +76,40 @@
 							<strong>Quantity:</strong> {{ order.qty }} <br>
                             <strong>Date added:</strong> {{ order.date }}
                         </p>
+						<!-- Complete Order -->
+						<button class="btn btn-secondary"
+							data-bs-toggle="modal" 
+							data-bs-target="#completeOrderModal{{ order.id }}">
+							Complete order
+						</button> 
                     </div>
                 </div>
             </div>
+			<!-- Complete Order Modal -->
+			<div class="modal fade" id="completeOrderModal{{ order.id }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalLabel">Complete Order?</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<p>
+								<h5>{{ order.name }}</h5>
+								<strong>Drug:</strong> {{ order.drug }} <br>
+								<strong>Quantity:</strong> {{ order.qty }} <br>
+								<strong>Date added:</strong> {{ order.date }}
+							</p>
+						</div>
+						<div class="modal-footer">
+							<form method="POST" action="complete_order/{{ order.id }}">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+								<button type="submit" class="btn btn-danger">Confirm</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
             {% endfor %}
         </div> 
     </div>
