@@ -20,6 +20,49 @@
                 <li><a class="dropdown-item" href="/?sort=drug">Drug</a></li>
                 <li><a class="dropdown-item" href="/?sort=name">Name</a></li>
             </ul>
+            <!-- Create Orders -->
+            <button class="btn btn-secondary" type="button" id="createOrderButton" 
+                data-bs-toggle="modal" data-bs-target="#inputModal">Create Order
+            </button> 
+            <!-- Modal -->
+            <div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel">Create Drug Order</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ url_for('create_order') }}" method="POST">
+                            <div class="modal-body">
+                                <!-- Input fields inside the modal -->
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Prescription Holder</label>
+                                    <input type="text" class="form-control" id="name" name="name" pattern="[A-Za-z\s]+" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="drug" class="form-label">Drug Type</label>
+                                    <select type="text" class="form-control" id="drug" name="drug" required>
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="H2O">H2O</option>
+                                        <option value="Dihydrogen monoxide">Dihydrogen monoxide</option>
+                                        <option value="Hydrogen hydroxide">Hydrogen hydroxide</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="qty" class="form-label">Quantity</label>
+                                    <input type="number" class="form-control" id="qty" name="qty" required min="1" step="any">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- Cancel button -->
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <!-- Confirm button -->
+                                <button type="submit" class="btn btn-primary">Confirm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 		<!-- Display cards with order information in each -->
         <div class="row">
@@ -37,7 +80,7 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
+        </div> 
     </div>
 </body>
 </html>

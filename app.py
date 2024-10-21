@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from datetime import datetime
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
@@ -26,6 +27,21 @@ def get_orders():
     sort_key = request.args.get('sort', 'date')
     sorted_orders = sorted(orders, key=lambda x: x[sort_key])
     return render_template('orders.html', orders=sorted_orders, sort_key=sort_key)
+
+@app.route('/create_order', methods=["POST"])
+def create_order():
+    #Create Order popup
+    name = request.form.get('name')
+    drug = request.form.get('drug')
+    qty = request.form.get('qty')
+
+    # Do something with the inputs (e.g., save them to a database, process data, etc.)
+    dateNow = datetime.now()
+    date = str(dateNow.month) + "/" + str(dateNow.day) + "/" + str(dateNow.year)
+    orders.append({"name": name, "drug": drug, "qty": qty, "date": date})
+    
+    # Redirect back to the home page or a success page
+    return redirect('/')
     
 @app.route('/inventory')
 def get_inventory():
