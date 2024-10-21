@@ -14,6 +14,13 @@ orders = [
     {"name": "Charlie", "drug": "H2O", "qty": "1", "date": "09/30/24"}
 ]
 
+# Fake inventory
+drug_inventory = [
+    {"name": "H2O", "quantity": 1000000, "expires" : "N/A"},
+    {"name": "Hydrogen Hydroxide", "quantity": 200, "expires" : "N/A"},
+    {"name": "Dihydrogen Monoxide", "quantity": 800000, "expires" : "N/A"}
+]
+
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -45,8 +52,11 @@ def create_order():
     
 @app.route('/inventory')
 def get_inventory():
-    sort_key = request.args.get('sort', 'date')
-    return render_template('inventory.html', sort_key=sort_key)
+    # Default to sorting by name
+    sort_key = request.args.get('sort', 'name')
+    sorted_inventory = sorted(drug_inventory, key=lambda x: x[sort_key])
+    reversed_inventory=sorted_inventory[::-1]
+    return render_template('inventory.html', drug_inventory=sorted_inventory, drug_inventory_reversed=reversed_inventory, sort_key=sort_key)
 
 if __name__ == '__main__':
     app.run(debug=True)

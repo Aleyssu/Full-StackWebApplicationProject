@@ -8,6 +8,23 @@
     <title>Inventory</title>
 </head>
 <body>
+    <script>
+        let reversed = false;
+
+        // Reverse inventory ascending / descending
+        function reverseLists(){
+            if(!reversed){
+                reversed = true;
+                document.querySelectorAll(".list1").forEach(x => x.style.display = "none");
+                document.querySelectorAll(".list2").forEach(x => x.style.display = "flex");
+            }
+            else{
+                reversed = false;
+                document.querySelectorAll(".list1").forEach(x => x.style.display = "flex");
+                document.querySelectorAll(".list2").forEach(x => x.style.display = "none");
+            }
+        }
+    </script>
     <div class="container mt-5">
 		<!-- Dropdown for sorting options -->
         <div class="dropdown mb-4">
@@ -15,10 +32,52 @@
                     id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 Sort by: {{ sort_key.capitalize() }}
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="/?sort=date">Date</a></li>
-                <li><a class="dropdown-item" href="/?sort=drug">Drug</a></li>
-            </ul>
+            <ol class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="/inventory?sort=name">Name</a></li>
+                <li><a class="dropdown-item" href="/inventory?sort=quantity">Quantity</a></li>
+            </ol>
+
+            <!-- Reverse order button -->
+            <button class="btn btn-secondary" type="button" id="reverseButton" style="font-size:50%;"
+            onclick="reverseLists()">Ascending<br>Descending
+            </button>
+        </div>
+
+
+        <!-- Display cards with order information in each -->
+        <div class="row list1" style="display: flex;">
+            {% for drug in drug_inventory %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ drug.name }}</h5>
+                        <p class="card-text">
+							<strong>Quantity:</strong> {{ drug.quantity }} <br>
+                        </p>
+                        <p class="card-text text-right">
+							Expires: {{ drug.expires }} <br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row list2" style="display: none;">
+            {% for drug in drug_inventory_reversed %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ drug.name }}</h5>
+                        <p class="card-text">
+							<strong>Quantity:</strong> {{ drug.quantity }} <br>
+                        </p>
+                        <p class="card-text text-right">
+							Expires: {{ drug.expires }} <br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </body>
