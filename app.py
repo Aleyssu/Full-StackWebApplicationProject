@@ -37,17 +37,18 @@ def get_orders():
 
 @app.route('/create_order', methods=["POST"])
 def create_order():
-    #Create Order popup
+    # Get inputs
     name = request.form.get('name')
     drug = request.form.get('drug')
     qty = request.form.get('qty')
 
-    # Do something with the inputs (e.g., save them to a database, process data, etc.)
+    # Get date
     dateNow = datetime.now()
     date = str(dateNow.month) + "/" + str(dateNow.day) + "/" + str(dateNow.year)
+    # Add inputs to temporary data
     orders.append({"name": name, "drug": drug, "qty": qty, "date": date})
     
-    # Redirect back to the home page or a success page
+    # Redirect back to the home page
     return redirect('/')
     
 @app.route('/inventory')
