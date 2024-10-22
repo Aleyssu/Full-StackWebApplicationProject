@@ -22,7 +22,7 @@ def test_create_order_invalid_name(client):
 
     # Check for a 400 Bad Request status
     assert response.status_code == 400
-    assert b"Input 1 must only contain letters and spaces." in response.data
+    assert b"Name must only contain letters and spaces." in response.data
 
 def test_create_order_invalid_drug(client):
     # Simulate a POST request to the '/create_order' route with no input selected for drug
@@ -34,6 +34,7 @@ def test_create_order_invalid_drug(client):
 
     # Check that the form rejects this with a 400 status code
     assert response.status_code == 400  
+    assert b"Drug must be selected." in response.data
 
 def test_create_order_invalid_quantity(client):
     # Simulate a POST request to the '/create_order' route with a negative quantity
@@ -45,4 +46,4 @@ def test_create_order_invalid_quantity(client):
 
     # Check for a 400 Bad Request status
     assert response.status_code == 400
-    assert b"Please enter a positive number" in response.data
+    assert b"Please enter a positive number." in response.data
