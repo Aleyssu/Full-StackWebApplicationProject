@@ -71,7 +71,7 @@ def create_order():
     dateNow = datetime.now()
     date = str(dateNow.month) + "/" + str(dateNow.day) + "/" + str(dateNow.year)
     # Add inputs to temporary data
-    orders.append({"name": name, "drug": drug, "qty": qty, "date": date, "id": str(uuid4())})
+    orders.append({"name": name, "drug": drug, "qty": int(qty), "date": date, "id": str(uuid4())})
     
     # Redirect back to the home page
     return redirect('/')
