@@ -63,18 +63,25 @@ def test_app_loads(client):
     assert '<html lang="en">' in res
 
 def test_inventory_loads(client):
-    #Check that our app runs properly
+    #Check that our inventory loads properly
     response = client.get('/inventory')
     res = response.get_data(as_text=True)
 
     assert '<div class="row list1" style="display: flex;">' in res
 
-def test_different_sort(client):
+def test_named_sort(client):
+    #test that we can sort ordering by name
     response = client.get('/inventory?sort=qty')
     res = response.get_data(as_text=True)
 
-    assert '800000' in res
-    assert '200' in res
+    assert res.find('200') < res.find('800000')
+
+def test_quantity_sort(client):
+    #test that our quantity sorting option works
+    response = client.get('/inventory')
+    res = response.get_data(as_text=True)
+
+    assert res.find("800000") < res.find("200")
         
 def test_get_orders(client):
     response = client.get('/')
