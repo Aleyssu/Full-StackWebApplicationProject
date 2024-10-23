@@ -70,7 +70,7 @@ def test_inventory_loads(client):
     assert '<div class="row list1" style="display: flex;">' in res
 
 def test_different_sort(client):
-    response = client.get('/inventory?sort=quantity')
+    response = client.get('/inventory?sort=qty')
     res = response.get_data(as_text=True)
 
     assert '800000' in res
@@ -78,7 +78,11 @@ def test_different_sort(client):
         
 def test_get_orders(client):
     response = client.get('/')
-    html = response.get_data(as_text=True)
+    # Ensure all orders are displayed
+    # Collapse whitespace in html text for consistent processing
+    html = ' '.join(response.get_data(as_text=True).split())
+    for order in app.orders:
+        assert "<strong>Drug:</strong> %s <br> <strong>Quantity:</strong> %s <br> <strong>Date added:</strong> %s" % (order['drug'], order['qty'], order['date']) in html
     # Ensure client recieves OK html response
     assert response.status_code == 200
     
