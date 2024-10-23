@@ -1,0 +1,12 @@
+Alex Sun - Aleyssu
+- Orders page and initial flask/html setup
+- Order completion implementation
+- Tests for above implementations
+- Merging groupwork on repo
+
+Nick Axani - NickAxani
+- Initial testing setup
+- Add order page and respective test cases
+
+Ewan Peterson - Ewan-Peterson
+- Drug inventory page and respective test cases
