@@ -1,7 +1,8 @@
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, redirect
 from uuid import uuid4
 import sys
+import re
 
 app = Flask(__name__)
 
@@ -52,14 +53,27 @@ def get_orders():
 
 @app.route('/create_order', methods=["GET", "POST"])
 def create_order():
+    # Get inputs
     name = request.form.get('name')
     drug = request.form.get('drug')
-    qty = int(request.form.get('qty'))
+    qty = request.form.get('qty')
+
+    if not re.match(r'^[A-Za-z\s]+$', name):
+        return "Name must only contain letters and spaces.", 400
     
+    if not drug:
+        return "Drug must be selected.", 400
+    
+    if float(qty) <= 0:
+        return "Please enter a positive number.", 400
+
+    # Get date
     dateNow = datetime.now()
     date = str(dateNow.month) + "/" + str(dateNow.day) + "/" + str(dateNow.year)
+    # Add inputs to temporary data
     orders.append({"name": name, "drug": drug, "qty": qty, "date": date, "id": str(uuid4())})
     
+    # Redirect back to the home page
     return redirect('/')
     
 @app.route('/complete_order/<order_id>', methods=["POST"])
@@ -73,7 +87,7 @@ def complete_order(order_id):
     
     orders.remove(order)
     
-    # Redirect back to the home page or a success page
+    # Redirect back to the home page or a success page
     return redirect('/')
     
 @app.route('/inventory')
