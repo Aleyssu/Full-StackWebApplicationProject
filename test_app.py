@@ -157,3 +157,33 @@ def test_complete_order(client):
         assert app.get_order(order_id) is None
         # Ensure successful redirect
         assert response.status_code == 302
+
+def test_modify_inventory_new(client):
+    response = client.post('/inventory/modify_inventory', data={
+        'name': 'New Drug',
+        'qty': 50,
+        'mode': 'change'
+    })
+    # 302 successful redirect
+    assert app.get_drug("New Drug") is not None
+    assert response.status_code == 302
+
+def test_modify_inventory_add(client):
+    response = client.post('/inventory/modify_inventory', data={
+        'name': 'New Drug',
+        'qty': 50,
+        'mode': 'change'
+    })
+    # 302 successful redirect
+    assert app.get_drug("New Drug")['qty'] == 100
+    assert response.status_code == 302
+
+def test_modify_inventory_subtract(client):
+    response = client.post('/inventory/modify_inventory', data={
+        'name': 'New Drug',
+        'qty': -10,
+        'mode': 'change'
+    })
+    # 302 successful redirect
+    assert app.get_drug("New Drug")['qty'] == 90
+    assert response.status_code == 302

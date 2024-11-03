@@ -43,9 +43,9 @@
                                     <label for="drug" class="form-label">Drug Type</label>
                                     <select type="text" class="form-control" id="drug" name="drug" required>
                                         <option value="" disabled selected>Select an option</option>
-                                        <option value="H2O">H2O</option>
-                                        <option value="Dihydrogen Monoxide">Dihydrogen Monoxide</option>
-                                        <option value="Hydrogen Hydroxide">Hydrogen Hydroxide</option>
+										{% for drug in drugs %}
+                                        <option value="{{ drug }}">{{ drug }}</option>
+										{% endfor %}
                                     </select>
                                 </div>
                                 <div class="mb-3">

@@ -41,6 +41,11 @@ def get_inventory():
     dict = inventory_ref.get()
     return list(dict.values()) if dict else []
 
+# Returns a list of strings of all drug names in the inventory
+def get_drug_list():
+    dict = inventory_ref.get()
+    return list(dict.keys()) if dict else []
+
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -54,7 +59,8 @@ def get_orders_sorted():
     sort_key = request.args.get('sort', 'date')
     sorted_orders = sorted(get_orders(), key=lambda x: x[sort_key])
     
-    return render_template('orders.html', orders=sorted_orders, sort_key=sort_key)
+    return render_template('orders.html', orders=sorted_orders, sort_key=sort_key, 
+                           drugs=get_drug_list())
 
 @app.route('/create_order', methods=["GET", "POST"])
 def create_order():
@@ -99,6 +105,20 @@ def get_inventory_sorted():
     sorted_inventory = sorted(get_inventory(), key=lambda x: x[sort_key])
     reversed_inventory=sorted_inventory[::-1]
     return render_template('inventory.html', drug_inventory=sorted_inventory, drug_inventory_reversed=reversed_inventory, sort_key=sort_key)
+
+@app.route('/inventory/modify_inventory', methods=["POST"])
+def modify_inventory():
+    # Default to sorting by name
+    drug = request.form.get('name')
+    qty = int(request.form.get('qty'))
+    mode = request.form.get('mode')
+    if mode == "set" or inventory_ref.child(drug).get() is None:
+        inventory_ref.update({drug: {"name": drug, "qty": qty, "expires": "N/A"}})
+    else:
+        drug_ref = inventory_ref.child(drug)
+        drug_ref.update({"qty": drug_ref.child("qty").get() + qty})
+    return redirect("/inventory")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
