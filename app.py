@@ -43,13 +43,32 @@ def index():
         return render_template('index.html', user_input=user_input)
     return render_template('index.html', user_input=None)
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def get_orders():
+
+    search_result = []
+    if request.method == "POST":
+        # Get search query from the form
+        query = request.form.get("search_query", "").lower()
+        # Search in the array
+        search_result = [item for item in orders if query in item["name"].lower()]
+    else:
+        # For GET requests, get the search query from the URL (for sort persistence)
+        query = request.args.get("search_query", "").lower()
+        if query:
+            search_result = [item for item in orders if query in item["name"].lower()]
+
     # Default to sorting by date
     sort_key = request.args.get('sort', 'date')
-    sorted_orders = sorted(orders, key=lambda x: x[sort_key])
+
+    # Get orders searched for if none exist show all orders
+    if search_result != []:
+        sorted_orders = sorted(search_result, key=lambda x: x[sort_key])
+    else:
+        sorted_orders = sorted(orders, key=lambda x: x[sort_key])
     
-    return render_template('orders.html', orders=sorted_orders, sort_key=sort_key)
+
+    return render_template('orders.html', orders=sorted_orders, sort_key=sort_key, search_query=query)
 
 @app.route('/create_order', methods=["GET", "POST"])
 def create_order():
@@ -90,13 +109,32 @@ def complete_order(order_id):
     # Redirect back to the home page or a success page
     return redirect('/')
     
-@app.route('/inventory')
+@app.route('/inventory', methods=["GET", "POST"])
 def get_inventory():
+
+    search_result = []
+    if request.method == "POST":
+        # Get search query from the form
+        query = request.form.get("search_query", "").lower()
+        # Search in the array
+        search_result = [item for item in drug_inventory if query in item["name"].lower()]
+    else:
+        # For GET requests, get the search query from the URL (for sort persistence)
+        query = request.args.get("search_query", "").lower()
+        if query:
+            search_result = [item for item in drug_inventory if query in item["name"].lower()]
+
     # Default to sorting by name
     sort_key = request.args.get('sort', 'name')
-    sorted_inventory = sorted(drug_inventory, key=lambda x: x[sort_key])
+
+    # Get orders searched for if none exist show all orders
+    if search_result != []:
+        sorted_inventory = sorted(search_result, key=lambda x: x[sort_key])
+    else:
+        sorted_inventory = sorted(drug_inventory, key=lambda x: x[sort_key])
+    
     reversed_inventory=sorted_inventory[::-1]
-    return render_template('inventory.html', drug_inventory=sorted_inventory, drug_inventory_reversed=reversed_inventory, sort_key=sort_key)
+    return render_template('inventory.html', drug_inventory=sorted_inventory, drug_inventory_reversed=reversed_inventory, sort_key=sort_key, search_query=query)
 
 if __name__ == '__main__':
     app.run(debug=True)
