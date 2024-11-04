@@ -28,19 +28,33 @@
     <div class="container mt-5">
 		<!-- Dropdown for sorting options -->
         <div class="dropdown mb-4">
-            <button class="btn btn-secondary dropdown-toggle" type="button" 
-                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                Sort by: {{ sort_key.capitalize() }}
-            </button>
-            <ol class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="/inventory?sort=name">Name</a></li>
-                <li><a class="dropdown-item" href="/inventory?sort=qty">Quantity</a></li>
-            </ol>
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" 
+                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort by: {{ sort_key.capitalize() }}
+                    </button>
+                    <ol class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="/inventory?sort=name&search_query={{ search_query }}">Name</a></li>
+                        <li><a class="dropdown-item" href="/inventory?sort=qty&search_query={{ search_query }}">Quantity</a></li>
+                    </ol>
+                </div>
 
-            <!-- Reverse order button -->
-            <button class="btn btn-secondary" type="button" id="reverseButton" style="font-size:50%;"
-            onclick="reverseLists()">Ascending<br>Descending
-            </button>
+                <!-- Reverse order button -->
+                <div class="col-auto">
+                    <button class="btn btn-secondary" type="button" id="reverseButton" style="font-size:50%;"
+                    onclick="reverseLists()">Ascending<br>Descending
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <div class="col">
+                    <form class="d-flex align-items-center" method="POST" action="/inventory">
+                        <input class="form-control me-2" type="search" placeholder="Search Name" aria-label="Search" name="search_query">
+                        <button class="btn btn-outline-success me-2 text-nowrap" type="submit">Search Inventory</button>
+                    </form>
+                </div>
+            </div>
         </div>
 		
 		<!-- Modify Inventory -->
