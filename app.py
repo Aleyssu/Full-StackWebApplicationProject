@@ -97,6 +97,20 @@ def complete_order(order_id):
     inventory_ref.child(drug).update({'qty' : get_drug(drug)['qty'] - order["qty"]})
     # Redirect back to the home page or a success page
     return redirect('/')
+
+@app.route('/modify_order/<order_id>', methods=["POST"])
+def modify_order(order_id):
+    action = request.form.get("action")
+    if action == "delete":
+        orders_ref.child(order_id).delete()
+    else:
+        name = request.form.get('name')
+        drug = request.form.get('drug')
+        qty = int(request.form.get('qty'))
+        order_ref = orders_ref.child(order_id)
+        order_ref.update({"name": name, "drug": drug, "qty": qty})
+
+    return redirect("/")
     
 @app.route('/inventory')
 def get_inventory_sorted():
@@ -108,7 +122,6 @@ def get_inventory_sorted():
 
 @app.route('/inventory/modify_inventory', methods=["POST"])
 def modify_inventory():
-    # Default to sorting by name
     drug = request.form.get('name')
     qty = int(request.form.get('qty'))
     mode = request.form.get('mode')
@@ -118,7 +131,6 @@ def modify_inventory():
         drug_ref = inventory_ref.child(drug)
         drug_ref.update({"qty": drug_ref.child("qty").get() + qty})
     return redirect("/inventory")
-
 
 if __name__ == '__main__':
     app.run(debug=True)

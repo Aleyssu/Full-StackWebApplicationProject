@@ -76,12 +76,24 @@
 							<strong>Quantity:</strong> {{ order.qty }} <br>
                             <strong>Date added:</strong> {{ order.date }}
                         </p>
-						<!-- Complete Order -->
-						<button class="btn btn-secondary"
-							data-bs-toggle="modal" 
-							data-bs-target="#completeOrderModal{{ order.id }}">
-							Complete order
-						</button> 
+						<div class="row">
+							<!-- Complete Order -->
+							<div class="col">
+								<button class="btn btn-secondary"
+									data-bs-toggle="modal" 
+									data-bs-target="#completeOrderModal{{ order.id }}">
+									Complete order
+								</button> 
+							</div>
+							<!-- Modify Order -->
+							<div class="col">
+								<button class="btn btn-secondary"
+									data-bs-toggle="modal" 
+									data-bs-target="#modifyOrderModal{{ order.id }}">
+									Modify order
+								</button> 
+							</div>
+						</div>
                     </div>
                 </div>
             </div>
@@ -110,9 +122,56 @@
 					</div>
 				</div>
 			</div>
-            {% endfor %}
-        </div> 
-    </div>
+			<!-- Modify Order Modal -->
+			<div class="modal fade" id="modifyOrderModal{{ order.id }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalLabel">Modify Order</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<form action="modify_order/{{ order.id }}" method="POST">
+							<div class="modal-body">
+								<p>
+									<div class="mb-3">
+										<label for="name" class="form-label">Prescription Holder</label>
+										<input type="text" class="form-control" id="name" name="name" pattern="[A-Za-z\s]+" value="{{ order.name }}" required>
+									</div>
+									<div class="mb-3">
+										<label for="drug" class="form-label">Drug Type</label>
+										<select type="text" class="form-control" id="drug" name="drug" required>
+											<option>{{ order.drug }}</option>
+											{% for drug in drugs %}
+											{% if drug != order.drug %}
+											<option value="{{ drug }}">{{ drug }}</option>
+											{% endif %}
+											{% endfor %}
+										</select>
+									</div>
+									<div class="mb-3">
+										<label for="qty" class="form-label">Quantity</label>
+										<input type="number" class="form-control" id="qty" name="qty" required min="1" value="{{ order.qty }}" step="any">
+									</div>
+								</p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+								<button type="submit" name="action" value="modify" class="btn btn-primary">Modify Order</button>
+								<button type="submit" name="action" value="delete" class="btn btn-danger" onclick="return confirmDeleteOrder();">Delete Order</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div> 
+	<script>
+        // Shows a confirmation prompt for deleting an order
+        function confirmDeleteOrder() {
+            return confirm("Delete this order?");
+        }
+    </script>
 </body>
 </html>
 {% endblock %}

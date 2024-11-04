@@ -158,14 +158,42 @@ def test_complete_order(client):
         # Ensure successful redirect
         assert response.status_code == 302
 
+def test_modify_order(client):
+    id = str(uuid4())
+    app.orders_ref.set({id:{"name": "Charlie", "drug": "H2O", "qty": 1, "date": "09/30/24", "id":id}})
+    response = client.post("/modify_order/" + id, data={
+        'name': 'Aleyssu',
+        'qty': 3,
+        'drug': 'Hydrogen Hydroxide',
+        'action': 'modify'
+    })
+    order = app.get_order(id)
+    assert order['name'] == 'Aleyssu'
+    assert order['qty'] == 3
+    assert order['drug'] == 'Hydrogen Hydroxide'
+    assert response.status_code == 302
+
+def test_delete_order(client):
+    id = str(uuid4())
+    app.orders_ref.set({id:{"name": "Charlie", "drug": "H2O", "qty": 1, "date": "09/30/24", "id":id}})
+    response = client.post("/modify_order/" + id, data={
+        'name': 'Aleyssu',
+        'qty': 3,
+        'drug': 'Hydrogen Hydroxide',
+        'action': 'delete'
+    })
+    assert app.get_order(id) is None
+    assert response.status_code == 302
+
 def test_modify_inventory_new(client):
     response = client.post('/inventory/modify_inventory', data={
         'name': 'New Drug',
         'qty': 50,
         'mode': 'change'
     })
-    # 302 successful redirect
+    # Make sure new drug shows up in database
     assert app.get_drug("New Drug") is not None
+    # 302 successful redirect
     assert response.status_code == 302
 
 def test_modify_inventory_add(client):
