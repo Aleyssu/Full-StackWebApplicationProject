@@ -163,9 +163,12 @@ def modify_inventory():
     mode = request.form.get('mode')
     if mode == "set" or inventory_ref.child(drug).get() is None:
         inventory_ref.update({drug: {"name": drug, "qty": qty, "expires": "N/A"}})
-    else:
+    elif mode == "add":
         drug_ref = inventory_ref.child(drug)
         drug_ref.update({"qty": drug_ref.child("qty").get() + qty})
+    else:
+        drug_ref = inventory_ref.child(drug)
+        drug_ref.update({"qty": drug_ref.child("qty").get() - qty})
     return redirect("/inventory")
 
 if __name__ == '__main__':
