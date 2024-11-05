@@ -1,0 +1,9 @@
+Alex Sun - Aleyssu
+- Full backend setup and integration along with test case refactor
+- Order modification implementation and respective test cases
+- Inventory modification implemenation and respective test cases
+- Test cases for search implementation
+- Merging groupwork on repo
+
+Nick Axani - NickAxani
+- Search implementation for orders and inventory page
