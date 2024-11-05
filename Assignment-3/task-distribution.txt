@@ -7,3 +7,8 @@ Alex Sun - Aleyssu
 
 Nick Axani - NickAxani
 - Search implementation for orders and inventory page
+
+Ewan Peterson - Ewan-Peterson
+- Fixed some application crashes and tests
+- Clarified inventory modification process
+- Added functionality to inventory and test cases
