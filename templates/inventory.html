@@ -46,6 +46,60 @@
                     onclick="reverseLists()">Ascending<br>Descending
                     </button>
                 </div>
+				
+				<!-- Modify Inventory -->
+				<div class="col-auto">
+					<button class="btn btn-secondary" type="button" id="modInvenButton" 
+						data-bs-toggle="modal" data-bs-target="#modInvenModal">Modify Inventory
+					</button> 
+				</div>
+				
+				<!-- Modify Inventory Modal -->
+				<div class="modal fade" id="modInvenModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="modalLabel">Modify Inventory</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<form action="inventory/modify_inventory" method="POST">
+								<div class="modal-body">
+									<!-- Input fields inside the modal -->
+									<div class="mb-3">
+									  <label for="autocompleteInput" class="form-label">Drug Name:</label>
+									  <input type="text" class="form-control" id="name", name="name" list="suggestionsList" placeholder="Enter Drug Name">
+									  
+									  <!-- Datalist for suggestions -->
+									  <datalist id="suggestionsList">
+										{% for drug in drug_inventory %}
+										<option value="{{ drug.name }}">
+										{% endfor %}
+										<!-- Add more options as needed -->
+									  </datalist>
+									</div>
+									<div class="mb-3">
+										<label for="qty" class="form-label">Quantity</label>
+										<input type="number" class="form-control" id="qty" name="qty" step="any">
+									</div>
+									<div class="mb-3">
+										<label for="mode" class="form-label">Mode</label>
+										<select type="text" class="form-control" id="mode" name="mode" required>
+											<option value="" disabled selected>Select an option</option>
+											<option value="set">Set</option>
+											<option value="change">Add/Remove</option>
+										</select>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<!-- Cancel button -->
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									<!-- Confirm button -->
+									<button type="submit" class="btn btn-primary">Confirm</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
 
                 <!-- Search -->
                 <div class="col">
@@ -56,57 +110,6 @@
                 </div>
             </div>
         </div>
-		
-		<!-- Modify Inventory -->
-		<button class="btn btn-secondary" type="button" id="modInvenButton" 
-			data-bs-toggle="modal" data-bs-target="#modInvenModal">Modify Inventory
-		</button> 
-		<!-- Modify Inventory Modal -->
-		<div class="modal fade" id="modInvenModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modalLabel">Modify Inventory</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<form action="inventory/modify_inventory" method="POST">
-						<div class="modal-body">
-							<!-- Input fields inside the modal -->
-							<div class="mb-3">
-							  <label for="autocompleteInput" class="form-label">Drug Name:</label>
-							  <input type="text" class="form-control" id="name", name="name" list="suggestionsList" placeholder="Enter Drug Name">
-							  
-							  <!-- Datalist for suggestions -->
-							  <datalist id="suggestionsList">
-								{% for drug in drug_inventory %}
-								<option value="{{ drug.name }}">
-								{% endfor %}
-								<!-- Add more options as needed -->
-							  </datalist>
-							</div>
-							<div class="mb-3">
-								<label for="qty" class="form-label">Quantity</label>
-								<input type="number" class="form-control" id="qty" name="qty" step="any">
-							</div>
-							<div class="mb-3">
-								<label for="mode" class="form-label">Mode</label>
-								<select type="text" class="form-control" id="mode" name="mode" required>
-									<option value="" disabled selected>Select an option</option>
-									<option value="set">Set</option>
-									<option value="change">Add/Remove</option>
-								</select>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<!-- Cancel button -->
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-							<!-- Confirm button -->
-							<button type="submit" class="btn btn-primary">Confirm</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
 
         <!-- Display cards with order information in each -->
         <div class="row list1" style="display: flex;">

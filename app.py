@@ -55,6 +55,7 @@ def index():
 
 @app.route('/', methods=["GET", "POST"])
 def get_orders_sorted():
+    orders = get_orders()
     search_result = []
     if request.method == "POST":
         # Get search query from the form
@@ -131,6 +132,7 @@ def modify_order(order_id):
     
 @app.route('/inventory', methods=["GET", "POST"])
 def get_inventory_sorted():
+    drug_inventory = get_inventory()
     search_result = []
     if request.method == "POST":
         # Get search query from the form

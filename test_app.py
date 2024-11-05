@@ -95,6 +95,17 @@ def test_inventory_loads(client):
     assert '1000000' in res
     assert '100' in res
 
+def test_inventory_search(client):
+    response = client.post('/inventory', data={
+        "search_query": "H2O"
+    })
+    res = response.get_data(as_text=True)
+
+    # Make sure only matching search shows up
+    assert "H2O" in res
+    assert "KCN" not in res
+    assert response.status_code == 200
+
 def test_inventory_qty_sort(client):
     #test that we can sort ordering by qty
     response = client.get('/inventory?sort=qty')
@@ -126,6 +137,17 @@ def test_orders_loads(client):
     assert '09/30/24' in res
     assert '10/30/24' in res
     # Ensure client recieves OK html response
+    assert response.status_code == 200
+
+def test_orders_search(client):
+    response = client.post('/', data={
+        "search_query": "Charlie"
+    })
+    res = response.get_data(as_text=True)
+
+    # Make sure only matching search shows up
+    assert "Charlie" in res
+    assert "Aleyssu" not in res
     assert response.status_code == 200
 
 def test_orders_name_sort(client):
