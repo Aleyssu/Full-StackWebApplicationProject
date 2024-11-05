@@ -222,7 +222,7 @@ def test_modify_inventory_add(client):
     response = client.post('/inventory/modify_inventory', data={
         'name': 'New Drug',
         'qty': 50,
-        'mode': 'change'
+        'mode': 'add'
     })
     # 302 successful redirect
     assert app.get_drug("New Drug")['qty'] == 100
@@ -231,9 +231,26 @@ def test_modify_inventory_add(client):
 def test_modify_inventory_subtract(client):
     response = client.post('/inventory/modify_inventory', data={
         'name': 'New Drug',
-        'qty': -10,
-        'mode': 'change'
+        'qty': 10,
+        'mode': 'subtract'
     })
     # 302 successful redirect
     assert app.get_drug("New Drug")['qty'] == 90
+    assert response.status_code == 302
+
+def test_inventory_delete(client):
+    client.post('/inventory/modify_inventory', data={
+        'name': 'New Drug 2',
+        'qty': 10,
+        'mode': 'set'
+    })
+
+    response = client.post('/inventory/modify_inventory', data={
+        'name': 'New Drug 2',
+        'qty': 10,
+        'mode': 'delete'
+    })
+
+    inventory = app.get_drug_list()
+    assert "New Drug 2" not in inventory
     assert response.status_code == 302

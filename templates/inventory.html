@@ -67,7 +67,7 @@
 									<!-- Input fields inside the modal -->
 									<div class="mb-3">
 									  <label for="autocompleteInput" class="form-label">Drug Name:</label>
-									  <input type="text" class="form-control" id="name", name="name" list="suggestionsList" placeholder="Enter Drug Name">
+									  <input type="text" class="form-control" id="name", name="name" list="suggestionsList" placeholder="Enter Drug Name" required>
 									  
 									  <!-- Datalist for suggestions -->
 									  <datalist id="suggestionsList">
@@ -79,14 +79,16 @@
 									</div>
 									<div class="mb-3">
 										<label for="qty" class="form-label">Quantity</label>
-										<input type="number" class="form-control" id="qty" name="qty" step="any">
+										<input type="number" class="form-control" id="qty" name="qty" step="any" required>
 									</div>
 									<div class="mb-3">
 										<label for="mode" class="form-label">Mode</label>
 										<select type="text" class="form-control" id="mode" name="mode" required>
 											<option value="" disabled selected>Select an option</option>
 											<option value="set">Set</option>
-											<option value="change">Add/Remove</option>
+											<option value="add">Add</option>
+                                            <option value="remove">Subtract</option>
+                                            <option value="delete">Remove from Inventory</option>
 										</select>
 									</div>
 								</div>
