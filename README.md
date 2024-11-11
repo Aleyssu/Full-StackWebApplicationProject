@@ -22,3 +22,14 @@ Once you have pytest, simply use:
 pytest test_app.py
 ~~~
 to run the tests.
+
+## Coverage
+Make sure you have Coverage installed.
+~~~bash
+pip install coverage
+~~~
+Once coverage is installed, run the coverage tool with
+~~~bash
+coverage run -m pytest
+coverage report
+~~~
