@@ -10,7 +10,6 @@
 <body>
     <script>
         let reversed = false;
-
         // Reverse inventory ascending / descending
         function reverseLists(){
             if(!reversed){
@@ -23,6 +22,34 @@
                 document.querySelectorAll(".list1").forEach(x => x.style.display = "flex");
                 document.querySelectorAll(".list2").forEach(x => x.style.display = "none");
             }
+        }
+
+        function confirmDanger(form){
+            let operation = document.getElementById("mode").value;
+            let qty = document.getElementById("qty").value;
+            let name = document.getElementById("name").value;
+            
+            //Only needs to run the rest if we are subtracting
+            if(operation != 'remove'){
+                form.submit();
+            }
+
+            const drugInv = {{ drug_inventory | tojson }};
+            let currentDrug = drugInv.find(drug => drug.name === name);
+            let currentQuantity = currentDrug.qty;
+            
+            let newQuantity = currentQuantity - qty;
+
+
+            if(newQuantity < 0){
+                if (confirm("Warning! Removing more than currently in inventory.")) {
+                    form.submit();
+                }
+            }
+            else{
+                form.submit();
+            }
+
         }
     </script>
     <div class="container mt-5">
@@ -96,7 +123,7 @@
 									<!-- Cancel button -->
 									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 									<!-- Confirm button -->
-									<button type="submit" class="btn btn-primary">Confirm</button>
+									<button type="button" class="btn btn-primary" onclick="confirmDanger(this.form)">Confirm</button>
 								</div>
 							</form>
 						</div>
