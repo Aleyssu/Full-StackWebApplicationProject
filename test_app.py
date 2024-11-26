@@ -259,7 +259,6 @@ def test_inventory_delete(client):
 @pytest.mark.integration
 def test_create_and_complete_order():
     with app.app.test_client() as client:
-    
         # set db
         app.orders_ref.set({})
         app.inventory_ref.set({"H2O": {"name": "H2O", "qty": 1000000, "expires" : "N/A"}})
@@ -302,3 +301,45 @@ def test_create_and_complete_order():
         #reset database
         app.orders_ref.set({})
         app.inventory_ref.set({})
+
+@pytest.mark.integration
+# Test adding a drug to the inventory, creating an order with it, then completing the order
+def test_add_drug_and_create_order(client):
+    # Set db to empty
+    app.orders_ref.set({})
+    app.inventory_ref.set({})
+    # Get inventory page to make sure it's accessible
+    response = client.get("/inventory")
+    assert response.status_code == 200
+    # Add drug to inventory
+    response = client.post('/inventory/modify_inventory', data={
+        'name': 'Test Drug', 
+        'qty': 100,  
+        'mode': '5'  
+    })
+    assert response.status_code == 302
+    assert response.location == '/inventory' 
+    # Check drug now exists
+    assert len(app.inventory_ref.get()) == 1
+    drug_ref = app.inventory_ref.child('Test Drug')
+    assert drug_ref.get() is not None
+    # Navigate to orders page
+    response = client.get('/')
+    assert response.status_code == 200
+    # Create order with newly added drug
+    response = client.post('/create_order', data={
+        'name': 'Aleyssu',
+        'drug': 'Test Drug', 
+        'qty': 11
+    })
+    assert response.status_code == 302
+    assert response.location == '/'
+    orders = app.orders_ref.get()
+    assert len(orders) == 1
+    drug_id = orders.popitem()[0]
+    # Complete order
+    response = client.post('/complete_order/' + drug_id)
+    assert response.status_code == 302
+    assert response.location == '/'
+    assert len(app.get_orders()) == 0
+    assert drug_ref.child('qty').get() == 89
