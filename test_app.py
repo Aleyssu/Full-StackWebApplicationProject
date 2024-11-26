@@ -31,7 +31,7 @@ def test_create_order_valid_input(client):
     # Simulate a POST request to the '/create_order' route with valid form data
     response = client.post('/create_order', data={
         'name': 'John Doe',  # Valid: only letters and spaces
-        'drug': 'H20',  # Valid: selected option
+        'drug': 'H2O',  # Valid: selected option
         'qty': '5'  # Valid: positive number
     })
 
@@ -43,7 +43,7 @@ def test_create_order_invalid_name(client):
     # Simulate a POST request to the '/create_order' route with invalid name
     response = client.post('/create_order', data={
         'name': 'John123',  # Invalid: contains numbers
-        'drug': 'H20',
+        'drug': 'H2O',
         'qty': '5'
     })
 
@@ -67,7 +67,7 @@ def test_create_order_invalid_quantity(client):
     # Simulate a POST request to the '/create_order' route with a negative quantity
     response = client.post('/create_order', data={
         'name': 'John Doe',
-        'drug': 'H20',
+        'drug': 'H2O',
         'qty': '-5'  # Invalid: negative number
     })
 
@@ -254,3 +254,92 @@ def test_inventory_delete(client):
     inventory = app.get_drug_list()
     assert "New Drug 2" not in inventory
     assert response.status_code == 302
+
+
+@pytest.mark.integration
+def test_create_and_complete_order():
+    with app.app.test_client() as client:
+        # set db
+        app.orders_ref.set({})
+        app.inventory_ref.set({"H2O": {"name": "H2O", "qty": 1000000, "expires" : "N/A"}})
+        orders = app.orders_ref.get()
+        number_of_orders = 0
+        if orders:
+            number_of_orders = len(orders)
+        # get main page
+        response = client.get("/")
+        assert response.status_code == 200
+        # submit valid order
+        response = client.post('/create_order', data={
+            'name': 'John Doe', 
+            'drug': 'H2O',  
+            'qty': '5'  
+        })
+        assert response.status_code == 302
+        assert response.location == '/' 
+        # check order now exists
+        orders = app.orders_ref.get()
+        orders_dict = orders.to_dict() if hasattr(orders, 'to_dict') else orders
+        assert len(orders_dict) == number_of_orders + 1
+        order_id, order_details = list(orders_dict.items())[-1]
+        name = order_details["name"]
+        drug = order_details["drug"]
+        qty = order_details["qty"]
+        id = order_details["id"]
+        assert name == "John Doe"
+        assert drug == "H2O"
+        assert qty == 5  
+        assert "date" in order_details  # date field exists
+        assert id == order_id  # order ID matches
+        # complete order
+        prev_qty = app.get_drug(drug)['qty'] 
+        response = client.post('/complete_order/' + id)
+        assert app.get_drug(drug)['qty'] == prev_qty - qty 
+        assert app.get_order(order_id) is None
+        assert response.status_code == 302
+
+        #reset database
+        app.orders_ref.set({})
+        app.inventory_ref.set({})
+
+@pytest.mark.integration
+# Test adding a drug to the inventory, creating an order with it, then completing the order
+def test_add_drug_and_create_order(client):
+    # Set db to empty
+    app.orders_ref.set({})
+    app.inventory_ref.set({})
+    # Get inventory page to make sure it's accessible
+    response = client.get("/inventory")
+    assert response.status_code == 200
+    # Add drug to inventory
+    response = client.post('/inventory/modify_inventory', data={
+        'name': 'Test Drug', 
+        'qty': 100,  
+        'mode': '5'  
+    })
+    assert response.status_code == 302
+    assert response.location == '/inventory' 
+    # Check drug now exists
+    assert len(app.inventory_ref.get()) == 1
+    drug_ref = app.inventory_ref.child('Test Drug')
+    assert drug_ref.get() is not None
+    # Navigate to orders page
+    response = client.get('/')
+    assert response.status_code == 200
+    # Create order with newly added drug
+    response = client.post('/create_order', data={
+        'name': 'Aleyssu',
+        'drug': 'Test Drug', 
+        'qty': 11
+    })
+    assert response.status_code == 302
+    assert response.location == '/'
+    orders = app.orders_ref.get()
+    assert len(orders) == 1
+    drug_id = orders.popitem()[0]
+    # Complete order
+    response = client.post('/complete_order/' + drug_id)
+    assert response.status_code == 302
+    assert response.location == '/'
+    assert len(app.get_orders()) == 0
+    assert drug_ref.child('qty').get() == 89

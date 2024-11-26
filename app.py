@@ -170,8 +170,6 @@ def modify_inventory():
         drug_ref.update({"qty": drug_ref.child("qty").get() + qty})
     else:
         drug_ref = inventory_ref.child(drug)
-        if drug_ref.child("qty").get() < qty:
-            return redirect("/inventory")
         drug_ref.update({"qty": drug_ref.child("qty").get() - qty})
 
     return redirect("/inventory")
