@@ -254,3 +254,97 @@ def test_inventory_delete(client):
     inventory = app.get_drug_list()
     assert "New Drug 2" not in inventory
     assert response.status_code == 302
+
+
+
+@pytest.mark.integration
+def test_inventory_modifications():
+    with app.app.test_client() as client:
+
+        app.inventory_ref.set({})
+
+        inventory = app.get_inventory()
+        assert len(inventory) == 0
+
+        #check new entry can be created
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug',
+            'qty': 1000,
+            'mode': 'add'
+        })  
+
+        assert app.get_drug("Newest Drug")['qty'] == 1000
+
+        #check add function works
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug',
+            'qty': 1,
+            'mode': 'add'
+        })  
+
+        assert app.get_drug("Newest Drug")['qty'] == 1001
+
+        #ensure system can handle strange inputs
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug',
+            'qty': -1,
+            'mode': 'add'
+        })  
+
+        assert app.get_drug("Newest Drug")['qty'] == 1000
+
+        #check set function works
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug',
+            'qty': 500,
+            'mode': 'set'
+        })  
+
+        assert app.get_drug("Newest Drug")['qty'] == 500
+
+        #check subtract function works
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug',
+            'qty': 20,
+            'mode': 'remove'
+        })  
+
+        assert app.get_drug("Newest Drug")['qty'] == 480
+
+        #check we inventory functions with a second drug
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug 2',
+            'qty': 100,
+            'mode': 'set'
+        })  
+
+        assert app.get_drug("Newest Drug")['qty'] == 480
+        assert app.get_drug("Newest Drug 2")['qty'] == 100
+
+        #check we can remove drugs from inventory
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug',
+            'qty': 0,
+            'mode': 'delete'
+        }) 
+
+        inventory = app.get_inventory()
+        assert len(inventory) == 1
+
+        #Check inventory stays on refresh
+        response = client.get("/inventory")
+
+        inventory = app.get_inventory()
+        assert len(inventory) == 1
+
+        response = client.post('/inventory/modify_inventory', data={
+            'name': 'Newest Drug 2',
+            'qty': 0,
+            'mode': 'delete'
+        }) 
+
+        inventory = app.get_inventory()
+        assert len(inventory) == 0
+
+        #reset
+        app.inventory_ref.set({})
