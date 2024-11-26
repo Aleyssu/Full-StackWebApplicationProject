@@ -28,6 +28,11 @@
             let operation = document.getElementById("mode").value;
             let qty = document.getElementById("qty").value;
             let name = document.getElementById("name").value;
+            
+            //Only needs to run the rest if we are subtracting
+            if(operation != 'remove'){
+                form.submit();
+            }
 
             const drugInv = {{ drug_inventory | tojson }};
             let currentDrug = drugInv.find(drug => drug.name === name);
@@ -36,7 +41,7 @@
             let newQuantity = currentQuantity - qty;
 
 
-            if(operation == 'remove' && newQuantity < 0){
+            if(newQuantity < 0){
                 if (confirm("Warning! Removing more than currently in inventory.")) {
                     form.submit();
                 }
