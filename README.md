@@ -22,6 +22,10 @@ Once you have pytest, simply use:
 pytest test_app.py
 ~~~
 to run the tests.
+To run just the integration tests, use:
+~~~bash
+pytest test_app.py -m integration
+~~~
 
 ## Coverage
 Make sure you have Coverage installed.
