@@ -35,7 +35,7 @@ coverage report
 ~~~
 
 ## End to End Test
-Make sure you have selenium, and webdriver-manager
+Make sure you have selenium, and webdriver-manager installed
 ~~~bash
 pip install selenium
 pip install webdriver-manager

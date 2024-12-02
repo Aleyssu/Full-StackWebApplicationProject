@@ -11,7 +11,7 @@ def test_inventory_modification():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
     try:
-        # Step 1: Navigate to Home page
+        # Step 1: Navigate to App Home page
         driver.get("http://127.0.0.1:5000/")
         print("Opened app homepage.")
 
@@ -60,7 +60,7 @@ def test_inventory_modification():
         if "Test 1" in page_source:
             print("Drug successfully added")
 
-        # Step 6: Test subtract opetarion
+        # Step 6: Test subtract opetarion (Repeat Steps 3 - 5)
         modify_inventory_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="modInvenButton"]'))
         )
