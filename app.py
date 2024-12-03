@@ -5,21 +5,13 @@ import re
 import firebase_admin
 from firebase_admin import credentials, db
 import os
+import sys
 
 # Ensure Firebase app is initialized only once
 if not firebase_admin._apps:
     cred = credentials.Certificate("serviceAccountKey.json")
     firebase_admin.initialize_app(
             cred, {'databaseURL': 'https://cisc327-project-eb026-default-rtdb.firebaseio.com/'})
-
-if os.getenv("FLASK_ENV") == "testing":
-    print("Starting in testing mode")
-    orders_ref = db.reference("testing/orders")
-    inventory_ref = db.reference("testing/inventory")
-else:
-    print("Starting in production mode")
-    orders_ref = db.reference("orders")
-    inventory_ref = db.reference("inventory")
 
 app = Flask(__name__)
 
@@ -124,7 +116,7 @@ def modify_order(order_id):
     else:
         name = request.form.get('name')
         drug = request.form.get('drug')
-        qty = int(request.form.get('qty'))
+        qty = int(request.form.get('mod_qty'))
         order_ref = orders_ref.child(order_id)
         order_ref.update({"name": name, "drug": drug, "qty": qty})
 
@@ -175,4 +167,24 @@ def modify_inventory():
     return redirect("/inventory")
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == 'testing':
+        print("Starting in testing mode")
+        orders_ref = db.reference("testing/orders")
+        inventory_ref = db.reference("testing/inventory")
+        orders_ref.set({})
+        inventory_ref.set({})
+    else:
+        print("Starting in production mode")
+        orders_ref = db.reference("orders")
+        inventory_ref = db.reference("inventory")
+        
     app.run(debug=True)
+else:
+    if os.getenv("FLASK_ENV") == "testing":
+        print("Starting in testing mode")
+        orders_ref = db.reference("testing/orders")
+        inventory_ref = db.reference("testing/inventory")
+    else:
+        print("Starting in production mode")
+        orders_ref = db.reference("orders")
+        inventory_ref = db.reference("inventory")
