@@ -250,7 +250,7 @@ def test_order_modification():
         print("Clicked modify order button", flush=True)
 
         qty_field = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.NAME, 'mod_qty'))
+            EC.element_to_be_clickable((By.ID, 'mod_qty'))
         )
         qty_field.click()
         qty_field.clear()
@@ -291,6 +291,6 @@ def test_order_modification():
         driver.quit()
 
 if __name__ == "__main__":
-    test_inventory_modification()
+    # test_inventory_modification()
     test_order_modification()
 

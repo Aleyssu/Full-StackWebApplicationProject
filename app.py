@@ -116,7 +116,7 @@ def modify_order(order_id):
     else:
         name = request.form.get('name')
         drug = request.form.get('drug')
-        qty = int(request.form.get('mod_qty'))
+        qty = int(request.form.get('qty'))
         order_ref = orders_ref.child(order_id)
         order_ref.update({"name": name, "drug": drug, "qty": qty})
 
