@@ -49,7 +49,7 @@ pip install webdriver-manager
 ~~~
 Once you have the tools installed, start the app
 ~~~bash
-python app.py
+python app.py testing
 ~~~
 Finally, in a new terminal, run the end to end test script
 ~~~bash
