@@ -40,3 +40,18 @@ Once coverage is installed, run the coverage tool with
 coverage run -m pytest
 coverage report
 ~~~
+
+## End to End Test
+Make sure you have selenium, and webdriver-manager installed
+~~~bash
+pip install selenium
+pip install webdriver-manager
+~~~
+Once you have the tools installed, start the app
+~~~bash
+python app.py
+~~~
+Finally, in a new terminal, run the end to end test script
+~~~bash
+python test_e2e.py
+~~~
