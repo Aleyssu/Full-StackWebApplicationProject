@@ -1,4 +1,5 @@
-# CISC327-Assignment-1
+# Full Stack Web Application
+This is the repo for a group project I've done in school for creating a full stack web application from scratch. I (Alex) created most of the framework, from the foundations of the front-end to the setting up and integration of the backend database. 
 
 ## Contributions
 Alex Sun - Aleyssu
